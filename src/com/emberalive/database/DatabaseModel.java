@@ -1,7 +1,6 @@
 package com.emberalive.database;
 
 import com.emberalive.database.views.RentalView;
-
 import java.sql.*;
 
 public class DatabaseModel {
@@ -43,5 +42,9 @@ public class DatabaseModel {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public java.sql.Connection getConnection() {
+        return connection;
     }
 }

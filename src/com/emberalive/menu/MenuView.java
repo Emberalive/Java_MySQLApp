@@ -6,7 +6,7 @@ import java.awt.*;
 
 public class MenuView {
     private static JFrame window;
-    private JButton Rentals, Equipment, users;
+    private JButton Rentals, Equipment, User;
 
     public MenuView(ViewManager viewManager) {
         window = new JFrame();
@@ -19,12 +19,12 @@ public class MenuView {
         window.setLayout(new GridLayout(3, 1));
         Rentals = new JButton("Rentals");
         Equipment = new JButton("Equipment");
-        users = new JButton("Users");
+        User = new JButton("Users");
 
 
         window.add(Rentals);
         window.add(Equipment);
-        window.add(users);
+        window.add(User);
     }
 
     public JButton getRentalsButton(){
@@ -34,7 +34,7 @@ public class MenuView {
         return Equipment;
     }
     public JButton getUsersButton(){
-        return users;
+        return User;
     }
 
     public static void display() {

@@ -4,6 +4,7 @@ import com.emberalive.database.DatabaseController;
 import com.emberalive.database.DatabaseModel;
 import com.emberalive.database.views.EquipmentView;
 import com.emberalive.database.views.RentalView;
+import com.emberalive.database.views.UserView;
 import com.emberalive.database.views.View;
 
 import java.util.HashMap;
@@ -19,6 +20,7 @@ public class ViewManager {
         //Register the views
         views.put("Rental", new RentalView());
         views.put("Equipment", new EquipmentView());
+        views.put("User", new UserView());
 
         for (View view : views.values()) {
             controller.initializeView(view);

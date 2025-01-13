@@ -17,7 +17,7 @@ public class RentalView extends View {
         RentalInfoButton = new JButton("basic info for rentals");
         rentalAndEquipment = new JButton("Rental and Equipment");
 
-        JPanel topPanel = new JPanel(new FlowLayout());
+        JPanel topPanel = new JPanel(new GridLayout(2, 5, 10, 10));
         topPanel.add(disconnectButton);
         topPanel.add(connectButton);
         topPanel.add(rentalAndEquipment);
@@ -46,10 +46,10 @@ public class RentalView extends View {
     @Override
     public void show() {
         // Display this view
-        JFrame frame = new JFrame("Rental View");
+        JFrame frame = new JFrame("Rental");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setContentPane(mainPanel);
-        frame.setSize(1100, 700);
+        frame.setSize(800, 600);
         frame.setVisible(true);
     }
 

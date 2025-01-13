@@ -20,7 +20,8 @@ public class EquipmentView extends View {
         foodCateringEquipButton = new JButton("Food Catering Equipment");
         officeSuppliesButton = new JButton("Office Supplies");
 
-        JPanel topPanel = new JPanel();
+        JPanel topPanel = new JPanel(new GridLayout(2, 5, 10, 10));
+
         topPanel.add(disconnectButton);
         topPanel.add(connectButton);
         topPanel.add(patTestButton);
@@ -53,16 +54,17 @@ public class EquipmentView extends View {
                 "INNER JOIN tcategories c ON ec.categoryID = c.categoryID\n" +
                 "INNER JOIN tequipment e ON ec.equipID = e.equipID\n" +
                 "WHERE c.categoryID = 6;");
-        actionButtons.put(officeSuppliesButton, "SELECT ec.equipID\n" +
+        actionButtons.put(officeSuppliesButton, "SELECT ec.equipID, e.eName\n" +
                 "FROM tequipment_categories ec\n" +
                 "INNER JOIN tcategories c ON ec.categoryID = c.categoryID\n" +
+                "INNER JOIN tequipment e ON ec.equipID = e.equipID\n" +
                 "WHERE c.categoryID = 9");
         return actionButtons;
     }
     @Override
     public void show() {
         // Display this view
-        JFrame frame = new JFrame("Equipment view");
+        JFrame frame = new JFrame("Equipment");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setContentPane(mainPanel);
         frame.setSize(800, 600);

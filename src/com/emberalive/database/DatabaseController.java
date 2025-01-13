@@ -1,11 +1,12 @@
 package com.emberalive.database;
 
 import com.emberalive.database.views.View;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.Map;
 
 public class DatabaseController {
@@ -23,6 +24,20 @@ public class DatabaseController {
                 view.getDisconnectButton().setEnabled(true);
             } else {
                 view.getStatusLabel().setText("connection failed");
+            }
+        });
+        view.getDisconnectButton().addActionListener( e ->{
+            try {
+                Connection con = model.getConnection();
+                if (con != null) {
+                    con.close();
+                    view.getConnectButton().setEnabled(true);
+                    view.getDisconnectButton().setEnabled(false);
+                    view.getStatusLabel().setText("Disconnected");
+                    view.getResultsTable().setEnabled(false);
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
             }
         });
 
