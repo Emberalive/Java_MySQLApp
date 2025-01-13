@@ -2,88 +2,55 @@ package com.emberalive.database.views;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
-public class RentalView {
-    private JFrame frame;
-    private JButton UserRentalButton, ConsumableButton, RentalInfoButton, connectButton, rentalAndEquipment, disconnectButton;
-    private JLabel statusLabel;
-    private JTable resultsTable;
+public class RentalView extends View {
+    private JButton UserRentalButton, ConsumableButton, RentalInfoButton, rentalAndEquipment;
+
 
     public RentalView()  {
-        frame = new JFrame("Rentals");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 600);
-
+        super();
         // Layout
-        JPanel panel = new JPanel(new BorderLayout());
-
-        // Top Panel (Predefined Query Buttons)
-        JPanel topPanel = new JPanel(new FlowLayout());
-        connectButton = new JButton("Connect");
-        disconnectButton = new JButton("Disconnect");
         UserRentalButton = new JButton("user Rentals");
         ConsumableButton = new JButton("Consumables for rentals");
         RentalInfoButton = new JButton("basic info for rentals");
         rentalAndEquipment = new JButton("Rental and Equipment");
-        topPanel.add(connectButton);
+
+        JPanel topPanel = new JPanel(new FlowLayout());
         topPanel.add(disconnectButton);
+        topPanel.add(connectButton);
         topPanel.add(rentalAndEquipment);
         topPanel.add(UserRentalButton);
         topPanel.add(ConsumableButton);
         topPanel.add(RentalInfoButton);
 
-        // Center Panel, which displays the results
-        resultsTable = new JTable();
-        JScrollPane scrollPane = new JScrollPane(resultsTable);
-        panel.add(scrollPane, BorderLayout.CENTER);
-
-        // Bottom Panel (Connection Status)
-        JPanel bottomPanel = new JPanel(new FlowLayout());
-        statusLabel = new JLabel("Not Connected");
-        bottomPanel.add(statusLabel);
-
         // Add Panels to Frame
-        panel.add(topPanel, BorderLayout.NORTH);
-        panel.add(scrollPane, BorderLayout.CENTER);
-        panel.add(bottomPanel, BorderLayout.SOUTH);
-        frame.add(panel);
+        mainPanel.add(topPanel, BorderLayout.NORTH);
+        mainPanel.add(new JScrollPane(resultsTable), BorderLayout.CENTER);
+        mainPanel.add(statusLabel, BorderLayout.SOUTH);
     }
 
-    public void display() {
+    @Override
+    public Map<JButton, String> getActionButtons(){
+        Map<JButton, String> actionButton = new HashMap<>();
+        actionButton.put(UserRentalButton, "SELECT * FROM `UserRentals`");
+        actionButton.put(ConsumableButton, "SELECT * FROM `ConsumablesForRentals`");
+        actionButton.put(RentalInfoButton, "SELECT userID, rentalNo, collection, returned FROM tRental");
+        actionButton.put(rentalAndEquipment, "SELECT r.userID, r.rentalNo, rl.copyID FROM tRental r\n" +
+                "INNER JOIN tRentalLine rl ON r.rentalNo = rl.rentalNo");
+
+        return actionButton;
+    }
+
+    @Override
+    public void show() {
+        // Display this view
+        JFrame frame = new JFrame("Rental View");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setContentPane(mainPanel);
+        frame.setSize(1100, 700);
         frame.setVisible(true);
     }
-
-    public JButton getConnectButton() {
-        return connectButton;
-    }
-
-    public JButton getDisconnectButton() {
-        return disconnectButton;
-    }
-
-    public JButton getUserRentalButton() {
-        return UserRentalButton;
-    }
-
-    public JButton getConsumableButton() {
-        return ConsumableButton;
-    }
-
-    public JButton getRentalInfoButton() {
-        return RentalInfoButton;
-    }
-
-    public JLabel getStatusLabel() {
-        return statusLabel;
-    }
-
-    public JTable getResultsTable() {
-        return resultsTable;
-    }
-
-    public JButton getRentalAndEquipment() {
-        return rentalAndEquipment;
-    }
-
 
 }

@@ -1,34 +1,28 @@
 package com.emberalive.database.views;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
-public class EquipmentView implements View {
-    private JFrame frame;
+public class EquipmentView extends View {
     private JButton patTestButton, availableEquipmentButton, allEquipCat, electricalEquipButton, foodCateringEquipButton,
-            officeSuppliesButton, connectButton, disconnectButton;
-    private JLabel statusLabel;
-    private JTable resultsTable;
+            officeSuppliesButton;
+
     public EquipmentView() {
-        frame = new JFrame("Rentals");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 600);
+        super();
 
-        // Layout
-        JPanel panel = new JPanel(new BorderLayout());
-
-        // top panel, the pre-defined query buttons
-        JPanel topPanel = new JPanel(new FlowLayout());
-        connectButton = new JButton("Connect");
-        disconnectButton = new JButton("Disconnect");
         patTestButton = new JButton("PatTest Date");
         allEquipCat = new JButton("All Equipment categories");
         availableEquipmentButton = new JButton("Available Equipment");
         electricalEquipButton = new JButton("Electrical Equipment");
         foodCateringEquipButton = new JButton("Food Catering Equipment");
         officeSuppliesButton = new JButton("Office Supplies");
-        topPanel.add(connectButton);
+
+        JPanel topPanel = new JPanel();
         topPanel.add(disconnectButton);
+        topPanel.add(connectButton);
         topPanel.add(patTestButton);
         topPanel.add(allEquipCat);
         topPanel.add(availableEquipmentButton);
@@ -37,35 +31,41 @@ public class EquipmentView implements View {
         topPanel.add(officeSuppliesButton);
 
         // Center Panel, which displays the results
-        resultsTable = new JTable();
-        JScrollPane scrollPane = new JScrollPane(resultsTable);
-        panel.add(scrollPane, BorderLayout.CENTER);
-
-        JPanel bottomPanel = new JPanel(new FlowLayout());
-        statusLabel = new JLabel("Not Connected");
-        bottomPanel.add(statusLabel);
-
-        panel.add(topPanel, BorderLayout.NORTH);
-        panel.add(scrollPane, BorderLayout.CENTER);
-        panel.add(bottomPanel, BorderLayout.SOUTH);
-        frame.add(panel);
+        mainPanel.add(topPanel, BorderLayout.NORTH);
+        mainPanel.add(new JScrollPane(resultsTable), BorderLayout.CENTER); // From parent View
+        mainPanel.add(statusLabel, BorderLayout.SOUTH);
     }
 
-    public void display() { frame.setVisible(true);}
-
-    public JButton getConnectButton() {return connectButton;}
-
-    public JButton getDisconnectButton() {return disconnectButton;}
-
-    public JButton getPatTestButton() {return patTestButton;}
-
-    public JButton getAllEquipCatButton() {return allEquipCat;}
-
-    public JButton getAvailableEquipmentButton() {return availableEquipmentButton;}
-
-    public JButton getElectricalEquipButton() {return electricalEquipButton;}
-
-    public JButton getFoodCateringEquipButton() {return foodCateringEquipButton;}
-
-    public JButton getOfficeSuppliesButton() {return officeSuppliesButton;}
+    @Override
+    public Map<JButton, String> getActionButtons(){
+        //Map buttons to queries specific to this view
+        Map<JButton, String> actionButtons = new HashMap<>();
+        actionButtons.put(patTestButton, "SELECT * FROM `pattestDate_rennual`");
+        actionButtons.put(allEquipCat, "SELECT categoryName FROM tcategories");
+        actionButtons.put(availableEquipmentButton, "SELECT * FROM `available_equipment`");
+        actionButtons.put(electricalEquipButton, "SELECT ec.equipID, e.eName\n" +
+                "FROM tequipment_categories ec\n" +
+                "INNER JOIN tcategories c ON ec.categoryID = c.categoryID\n" +
+                "INNER JOIN tequipment e ON ec.equipID = e.equipID\n" +
+                "WHERE c.categoryID = 2");
+        actionButtons.put(foodCateringEquipButton, "SELECT ec.equipID, e.eName\n" +
+                "FROM tequipment_categories ec\n" +
+                "INNER JOIN tcategories c ON ec.categoryID = c.categoryID\n" +
+                "INNER JOIN tequipment e ON ec.equipID = e.equipID\n" +
+                "WHERE c.categoryID = 6;");
+        actionButtons.put(officeSuppliesButton, "SELECT ec.equipID\n" +
+                "FROM tequipment_categories ec\n" +
+                "INNER JOIN tcategories c ON ec.categoryID = c.categoryID\n" +
+                "WHERE c.categoryID = 9");
+        return actionButtons;
+    }
+    @Override
+    public void show() {
+        // Display this view
+        JFrame frame = new JFrame("Equipment view");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setContentPane(mainPanel);
+        frame.setSize(800, 600);
+        frame.setVisible(true);
+    }
 }

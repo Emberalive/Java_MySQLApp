@@ -1,88 +1,46 @@
 package com.emberalive.database;
 
-import com.emberalive.database.views.RentalView;
 import com.emberalive.database.views.View;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.util.Map;
 
 public class DatabaseController {
     private DatabaseModel model;
-    private RentalView rv;
 
-    public enum TargetView{
-        RENTAL_VIEW,
-        USERS_VIEW,
-        EQUIPMENTS_VIEW
-    }
-
-
-    public DatabaseController(DatabaseModel model, RentalView rv) {
+    public DatabaseController(DatabaseModel model) {
         this.model = model;
-        this.rv = rv;
-
-        // Add listeners for the "Connect" button
-
-        view.getConnectButton().addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (model.connect()) {
-                    view.getStatusLabel().setText("Connected to Database");
-                    view.getConnectButton().setEnabled(false);
-                    view.getDisconnectButton().setEnabled(true);
-                } else {
-                    view.getStatusLabel().setText("Connection Failed");
-                }
-            }
-        });
-
-        //ActionListeners for RentalView
-        rv.getDisconnectButton().addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                model.disconnect(view);
-            }
-        });
-        rv.getUserRentalButton().addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                executeQueryAndPopulateTable("SELECT * FROM `UserRentals`");
-            }
-        });
-        rv.getConsumableButton().addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                executeQueryAndPopulateTable("SELECT categoryName FROM tcategories");
-            }
-        });
-        rv.getRentalInfoButton().addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                executeQueryAndPopulateTable("SELECT userID, rentalNo, collection, returned FROM tRental");
-            }
-        });
-        rv.getRentalAndEquipment().addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                executeQueryAndPopulateTable("SELECT r.userID, r.rentalNo, rl.copyID FROM tRental r\n" +
-                        "INNER JOIN tRentalLine rl ON r.rentalNo = rl.rentalNo");
-            }
-        });
     }
 
-    public void selectTargetView (TargetView enumval){
-        switch (enumval){
-            case RENTAL_VIEW:
+    public void initializeView(View view) {
+        view.getConnectButton().addActionListener( e ->{
+            if(model.connect()) {
+                view.getStatusLabel().setText("connected to database");
+                view.getConnectButton().setEnabled(false);
+                view.getDisconnectButton().setEnabled(true);
+            } else {
+                view.getStatusLabel().setText("connection failed");
+            }
+        });
 
+        for (Map.Entry<JButton, String> entry : view.getActionButtons().entrySet()) {
+            JButton button = entry.getKey();
+            String query = entry.getValue();
+
+            button.addActionListener(e -> executeQueryAndPopulateTable(query, view.getResultsTable()));
         }
     }
 
-
     // Executes a query and populates the JTable with the results
-    private void executeQueryAndPopulateTable(String query) {
+    private void executeQueryAndPopulateTable(String query, JTable table) {
         try {
             ResultSet rs = model.executeQuery(query);
-            populateTable(rs, view.getResultsTable());
+            populateTable(rs, table);
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(view.getResultsTable(), "Error: " + ex.getMessage());
+            JOptionPane.showMessageDialog(table, "Error: " + ex.getMessage());
         }
     }
     // Populate JTable with ResultSet data
