@@ -30,19 +30,6 @@ public class DatabaseModel {
         return stmt.executeQuery(query);
     }
 
-    // Close the database connection
-    public void disconnect(RentalView view) {
-        try {
-            if (connection != null) {
-                connection.close();
-                view.getConnectButton().setEnabled(true);
-                view.getDisconnectButton().setEnabled(false);
-                view.getStatusLabel().setText("Disconnected");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
     public java.sql.Connection getConnection() {
         return connection;
